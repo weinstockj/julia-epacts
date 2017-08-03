@@ -11,7 +11,8 @@ function return_valid_ped_ids(phenotype::DataArrays.DataArray{Int64, 1},
 end
 
 # select samples in vcf file where phenotype is not null
-function return_valid_vcf_ids(ped_ids, vcf_ids::Array{String, 1})
+function return_valid_vcf_ids(ped_ids::DataArrays.DataArray{String, 1}, 
+                              vcf_ids::Array{String, 1})
     indices = Int64[]
     for id in ped_ids
         index = find(vcf_ids .== id)
@@ -26,7 +27,7 @@ function trim_and_convert_phenotype(phenotype::DataArrays.DataArray{Int64, 1})
     return convert(Array, phenotype[~isna(phenotype)])
 end
 
-function extract_covars(ped, phenotype)
+function extract_covars(ped::DataFrames.DataFrame, phenotype::DataArrays.DataArray{Int64, 1})
     covars = ped[[:SEX, :AGE, :PC1, :PC2, :PC3, :PC4]]
     missing_indices = return_missing_indices(phenotype)
     non_missing_indices = setdiff(1:length(phenotype), missing_indices)
