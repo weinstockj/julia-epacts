@@ -64,17 +64,21 @@ function main()
             NS = size(covars, 1)::Int64
             AC = sum(genotype)::Float64
             MAF = AC / (2 * NS)
-            info("running logit now")
-            res = single_b_firth(covars, trimmed_phenotype, false)
-            res[:CHROM] = CHROM
-            res[:BEGIN] = POS
-            res[:END] = POS
-            res[:MARKER_ID] = MARKER_ID
-            res[:NS] = NS
-            res[:AC] = AC
-            res[:MAF] = MAF
-            append!(result, res)
-            info("now done with logit")
+            if MAF >= 0.01
+                info("running logit now: ", count)
+                res = single_b_firth(covars, trimmed_phenotype, false)
+                res[:CHROM] = CHROM
+                res[:BEGIN] = POS
+                res[:END] = POS
+                res[:MARKER_ID] = MARKER_ID
+                res[:NS] = NS
+                res[:AC] = AC
+                res[:MAF] = MAF
+                append!(result, res)
+                info("now done with logit")
+            else
+                info("skipping number", count, " ", MARKER_ID, " because MAF < 0.01")
+            end
       #  end
         count = count + 1
     end
